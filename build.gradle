@@ -57,7 +57,7 @@ subprojects {
         doLast {
             copy {
                 from configurations.runtime
-                into 'dist/lib'
+                into 'dist/libs'
             }
             copy {
                 from file('src/main/resources/')
