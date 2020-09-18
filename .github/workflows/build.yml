@@ -1,0 +1,35 @@
+name: Java-SDK GitHub Actions
+on:
+  push:
+  pull_request:
+  release:
+    types: [published, created, edited]
+env:
+  CCACHE_DIR: ${{ github.workspace }}/ccache
+
+jobs:
+  build:
+    name: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-16.04, macos-latest]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - name: install macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew install openjdk
+      - name: install Ubuntu dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt install -y git curl default-jdk build-essential
+      - name: download dynamic libs
+        run: |
+          curl -LO https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK/releases/download/v0.0.1/lab-core-dynamic-libs.tar.gz
+          tar zxvf lab-core-dynamic-libs.tar.gz
+          cp ./lab-core-dynamic-libs/* ./solution/vcl/src/main/resources/WeDPR_dynamic_lib/
+      - name: compile and run ut
+        run: bash ./gradlew clean build
+      - name: run demo
+        run: cd solution/vcl/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.vcl.DemoMain
