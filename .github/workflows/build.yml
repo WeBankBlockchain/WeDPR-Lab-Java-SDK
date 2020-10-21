@@ -31,5 +31,5 @@ jobs:
           cp ./lab-core-dynamic-libs/* ./solution/vcl/src/main/resources/WeDPR_dynamic_lib/
       - name: compile and run ut
         run: bash ./gradlew clean build
-      - name: run demo
-        run: cd solution/vcl/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.vcl.DemoMain
+      # - name: run demo
+      #   run: cd solution/vcl/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.vcl.DemoMain
