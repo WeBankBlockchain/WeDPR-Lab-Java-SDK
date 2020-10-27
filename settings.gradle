@@ -11,3 +11,5 @@ rootProject.name = 'WeDPR-Lab-Java-SDK'
 include 'common'
 include 'solution:vcl'
 include 'solution:crypto'
+include 'demo'
+

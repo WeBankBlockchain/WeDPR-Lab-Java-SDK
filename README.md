@@ -20,7 +20,7 @@ cp ./lab-core-dynamic-libs/* ./solution/vcl/src/main/resources/WeDPR_dynamic_lib
 # 编译项目
 bash ./gradlew clean build
 # 进入项目目录
-cd solution/vcl/dist/
+cd demo/dist/
 # 运行demo
-java -cp "apps/*:conf/:libs/*" com.webank.wedpr.vcl.DemoMain
+java -cp "apps/*:conf/:libs/*" com.webank.wedpr.demo.DemoMain
 ```
