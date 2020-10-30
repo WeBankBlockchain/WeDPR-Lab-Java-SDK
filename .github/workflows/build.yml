@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, ubuntu-16.04, macos-latest]
+        os: [ubuntu-18.04, ubuntu-16.04]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,10 +26,10 @@ jobs:
         run: sudo apt-get update && sudo apt install -y git curl default-jdk build-essential
       - name: download dynamic libs
         run: |
-          curl -LO https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK/releases/download/v0.0.1/lab-core-dynamic-libs.tar.gz
-          tar zxvf lab-core-dynamic-libs.tar.gz
-          cp ./lab-core-dynamic-libs/* ./solution/vcl/src/main/resources/WeDPR_dynamic_lib/
+          curl -LO https://github.com/WeBankBlockchain/WeDPR-Lab-Core/releases/download/v1.1.0/java_sdk_dynamic_lib_linux.tar.gz
+          tar zxvf java_sdk_dynamic_lib_linux.tar.gz
+          cp ./java_sdk_dynamic_lib_linux/* ./demo/src/main/resources/WeDPR_dynamic_lib/
       - name: compile and run ut
         run: bash ./gradlew clean build
-      # - name: run demo
-      #   run: cd solution/vcl/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.vcl.DemoMain
+      - name: run demo
+        run: cd demo/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.demo.DemoMain
