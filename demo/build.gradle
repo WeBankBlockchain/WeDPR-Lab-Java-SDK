@@ -19,5 +19,6 @@ dependencies {
     compile project(':common')
     compile project(':solution:crypto')
     compile project(':solution:vcl')
+    compile project(':solution:selectivedisclosure')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
