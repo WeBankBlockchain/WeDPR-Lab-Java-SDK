@@ -13,8 +13,8 @@ import java.util.*;
  * <p>For a better interactive demo, please try our Rust version at
  * https://github.com/WeBankBlockchain/WeDPR-Lab-Core
  */
-public class SelectiveDisclosureDemo {
-  public static void run(SelectiveDisclosureClient selectiveDisclosureClient) throws Exception {
+public class ScdDemo {
+  public static void run(ScdClient scdClient) throws Exception {
     System.out.println("\n*******\nSELECTIVE DISCLOSURE RUN\n*******");
 
     // issuer make template
@@ -23,11 +23,11 @@ public class SelectiveDisclosureDemo {
     attributes.add("age");
     attributes.add("gender");
     attributes.add("time");
-    String encodeAttributeTemplate = selectiveDisclosureClient.makeAttributeTemplate(attributes);
+    String encodeAttributeTemplate = scdClient.issuerMakeCertificateSchema(attributes);
     System.out.println("Encoded attributeTemplate = " + encodeAttributeTemplate);
 
     IssuerResult issuerResult =
-        selectiveDisclosureClient.makeCredentialTemplate(encodeAttributeTemplate);
+        scdClient.issuerMakeCertificateTemplate(encodeAttributeTemplate);
 
     String credentialTemplate = issuerResult.certificateTemplate;
     String templateSecretKey = issuerResult.templatePrivateKey;
@@ -40,23 +40,23 @@ public class SelectiveDisclosureDemo {
     maps.put("age", "18");
     maps.put("gender", "1");
     maps.put("time", "12345");
-    String credentialInfo = selectiveDisclosureClient.makeCredentialInfo(maps);
+    String credentialInfo = scdClient.userMakeAttributeDict(maps);
     UserResult userResult =
-        selectiveDisclosureClient.makeCredential(credentialInfo, credentialTemplate);
+        scdClient.userFillCertificate(credentialInfo, credentialTemplate);
 
     String signatureRequest = userResult.signCertificateRequest;
-    String masterSecret = userResult.userPrivateKey;
+    String userPrivateKey = userResult.userPrivateKey;
     String credentialSecretsBlindingFactors = userResult.certificateSecretsBlindingFactors;
     String userNonce = userResult.userNonce;
     System.out.println("Encoded signatureRequest = " + signatureRequest);
-    System.out.println("Encoded masterSecret = " + masterSecret);
+    System.out.println("Encoded userPrivateKey = " + userPrivateKey);
     System.out.println(
         "Encoded credentialSecretsBlindingFactors = " + credentialSecretsBlindingFactors);
     System.out.println("Encoded userNonce = " + userNonce);
 
     // Issuer sign user's request to generate credential
     issuerResult =
-        selectiveDisclosureClient.signCredential(
+        scdClient.issuerSignCertificate(
             credentialTemplate, templateSecretKey, signatureRequest, "id1", userNonce);
 
     String credentialSignature = issuerResult.certificateSignature;
@@ -66,11 +66,11 @@ public class SelectiveDisclosureDemo {
 
     // User generate new credentialSignature
     userResult =
-        selectiveDisclosureClient.blindCredentialSignature(
+        scdClient.userBlindCertificateSignature(
             credentialSignature,
             credentialInfo,
             credentialTemplate,
-            masterSecret,
+            userPrivateKey,
             credentialSecretsBlindingFactors,
             issuerNonce);
 
@@ -96,19 +96,19 @@ public class SelectiveDisclosureDemo {
     verificationRuleSet = verificationRuleSet.toBuilder().addAttributePredicate(predicate).build();
 
     String verificationRuleStr =
-        SelectiveDisclosureClient.protoToEncodedString(verificationRuleSet);
+        ScdClient.protoToEncodedString(verificationRuleSet);
     System.out.println("Encoded verificationRuleStr = " + verificationRuleStr);
 
     // User prove by verification rules
     String verificationNonce =
-        selectiveDisclosureClient.verifierGetVerificationNonce().verificationNonce;
+        scdClient.verifierGetVerificationNonce().verificationNonce;
     userResult =
-        selectiveDisclosureClient.proveCredentialInfo(
+        scdClient.userProveSelectiveDisclosure(
             verificationRuleStr,
             credentialSignatureNew,
             credentialInfo,
             credentialTemplate,
-            masterSecret,
+            userPrivateKey,
             verificationNonce);
 
     String verificationRequest = userResult.verifyRequest;
@@ -116,11 +116,11 @@ public class SelectiveDisclosureDemo {
 
     // Verifier verify proof
     VerifierResult verifierResult =
-        selectiveDisclosureClient.verifyProof(verificationRuleStr, verificationRequest);
+        scdClient.verifierVerifySelectiveDisclosure(verificationRuleStr, verificationRequest);
     System.out.println("result = " + verifierResult.boolResult);
 
     verifierResult =
-        selectiveDisclosureClient.getRevealedAttrsFromVerificationRequest(verificationRequest);
+        scdClient.verifierGetRevealedAttrsFromVerifyRequest(verificationRequest);
     String revealedAttributeDict = verifierResult.revealedAttributeDict;
     AttributeDict attributeDict =
         AttributeDict.parseFrom(Utils.stringToBytes(revealedAttributeDict));
