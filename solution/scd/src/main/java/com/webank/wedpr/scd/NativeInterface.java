@@ -70,7 +70,7 @@ public class NativeInterface {
       String credentialSignature,
       String credentialInfo,
       String credentialTemplate,
-      String masterSecret,
+      String userPrivateKey,
       String credentialSecretsBlindingFactors,
       String nonceCredential);
 
@@ -79,7 +79,7 @@ public class NativeInterface {
       String credentialSignature,
       String credentialInfo,
       String credentialTemplate,
-      String masterSecret,
+      String userPrivateKey,
       String verificationNonce);
 
   public static native VerifierResult verifierVerifySelectiveDisclosure(
