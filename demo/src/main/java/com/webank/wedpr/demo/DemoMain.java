@@ -3,7 +3,7 @@
 package com.webank.wedpr.demo;
 
 import com.webank.wedpr.crypto.CryptoClient;
-import com.webank.wedpr.selectivedisclosure.SelectiveDisclosureClient;
+import com.webank.wedpr.scd.SelectiveDisclosureClient;
 import com.webank.wedpr.vcl.VclClient;
 
 /** Demo Launcher. */
