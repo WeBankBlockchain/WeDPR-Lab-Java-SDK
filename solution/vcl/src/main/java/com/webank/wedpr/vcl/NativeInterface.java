@@ -29,7 +29,6 @@ public class NativeInterface {
     }
   }
 
-  // JNI function section.
   public static native VclResult makeCredit(long value);
 
   public static native VclResult proveSumBalance(String c1Secret, String c2Secret, String c3Secret);
