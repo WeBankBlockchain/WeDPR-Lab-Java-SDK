@@ -9,7 +9,7 @@ import java.util.Base64;
 /** Minimalist demo of WeDPR Crypto Tools. */
 public class CryptoDemo {
   public static void run(CryptoClient cryptoClient) throws Exception {
-    System.out.println("\n*******\nCRYPTO TOOL RUN\n*******");
+    System.out.println("\n*******\nCRYPTO DEMO RUN\n*******");
 
     CryptoResult cryptoResult = cryptoClient.secp256k1GenKeyPair();
     String publicKey = cryptoResult.publicKey;

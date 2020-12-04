@@ -6,7 +6,7 @@ import com.webank.wedpr.common.WedprException;
 import com.webank.wedpr.common.WedprResult;
 
 /**
- * Result class used by selective disclosure client.
+ * Result class used by a SCD certificate user.
  *
  * <p>This is an easy way to return multiple data from a single JNI interface.
  */

@@ -8,122 +8,128 @@ import com.webank.wedpr.scd.proto.*;
 import java.util.*;
 
 /**
- * Minimalist demo of selective disclosure.
+ * Minimalist demo of selective certificate disclosure (SCD).
  *
  * <p>For a better interactive demo, please try our Rust version at
  * https://github.com/WeBankBlockchain/WeDPR-Lab-Core
  */
 public class ScdDemo {
-  public static void run(ScdClient scdClient) throws Exception {
-    System.out.println("\n*******\nSELECTIVE DISCLOSURE RUN\n*******");
+  private static final String NAME = "name";
+  private static final String AGE = "age";
+  private static final String GENDER = "gender";
+  private static final String ISSUE_TIME = "issue_time";
+  private static final String DEFAULT_USER_ID = "default_user_id";
 
-    // issuer make template
-    ArrayList<String> attributes = new ArrayList<String>();
-    attributes.add("name");
-    attributes.add("age");
-    attributes.add("gender");
-    attributes.add("time");
-    String encodeAttributeTemplate = scdClient.issuerMakeCertificateSchema(attributes);
-    System.out.println("Encoded attributeTemplate = " + encodeAttributeTemplate);
+  public static void run(
+      IssuerClient issuerClient, UserClient userClient, VerifierClient verifierClient)
+      throws Exception {
+    System.out.println("\n*******\nSCD DEMO RUN\n*******");
 
-    IssuerResult issuerResult =
-        scdClient.issuerMakeCertificateTemplate(encodeAttributeTemplate);
+    // An issuer defines the certificate schema and generates the certificate template.
+    List<String> schema = Arrays.asList(NAME, AGE, GENDER, ISSUE_TIME);
+    System.out.println("Encoded schema = " + schema);
 
-    String credentialTemplate = issuerResult.certificateTemplate;
-    String templateSecretKey = issuerResult.templatePrivateKey;
-    System.out.println("Encoded credentialTemplate = " + credentialTemplate);
-    System.out.println("Encoded templateSecretKey = " + templateSecretKey);
+    IssuerResult issuerResult = issuerClient.makeCertificateTemplate(schema);
 
-    // User fill template
-    Map<String, String> maps = new HashMap<String, String>();
-    maps.put("name", "123");
-    maps.put("age", "18");
-    maps.put("gender", "1");
-    maps.put("time", "12345");
-    String credentialInfo = scdClient.userMakeAttributeDict(maps);
-    UserResult userResult =
-        scdClient.userFillCertificate(credentialInfo, credentialTemplate);
+    String certificateTemplate = issuerResult.certificateTemplate;
+    String templatePrivateKey = issuerResult.templatePrivateKey;
+    System.out.println("Encoded certificateTemplate = " + certificateTemplate);
+    System.out.println("Encoded templatePrivateKey = " + templatePrivateKey);
 
-    String signatureRequest = userResult.signCertificateRequest;
+    // A user fills the certificate template and prepares a request for the issuer to sign.
+    Map<String, String> certificateDataInput = new HashMap<>();
+    // TODO: Add a utility function to convert any string to a decimal string.
+    // Before this utility function is implemented, the attribute value can only be a decimal
+    // string.
+    certificateDataInput.put(NAME, "123");
+    certificateDataInput.put(AGE, "19");
+    certificateDataInput.put(GENDER, "1");
+    certificateDataInput.put(ISSUE_TIME, "12345");
+    String certificateData = userClient.encodeAttributeDict(certificateDataInput);
+    UserResult userResult = userClient.fillCertificate(certificateData, certificateTemplate);
+
+    String signCertificateRequest = userResult.signCertificateRequest;
     String userPrivateKey = userResult.userPrivateKey;
-    String credentialSecretsBlindingFactors = userResult.certificateSecretsBlindingFactors;
+    String certificateSecretsBlindingFactors = userResult.certificateSecretsBlindingFactors;
     String userNonce = userResult.userNonce;
-    System.out.println("Encoded signatureRequest = " + signatureRequest);
+    System.out.println("Encoded signCertificateRequest = " + signCertificateRequest);
     System.out.println("Encoded userPrivateKey = " + userPrivateKey);
     System.out.println(
-        "Encoded credentialSecretsBlindingFactors = " + credentialSecretsBlindingFactors);
+        "Encoded certificateSecretsBlindingFactors = " + certificateSecretsBlindingFactors);
     System.out.println("Encoded userNonce = " + userNonce);
 
-    // Issuer sign user's request to generate credential
+    // The issuer verifies the certificate signing request from the user and signs the certificate.
     issuerResult =
-        scdClient.issuerSignCertificate(
-            credentialTemplate, templateSecretKey, signatureRequest, "id1", userNonce);
+        issuerClient.signCertificate(
+            certificateTemplate,
+            templatePrivateKey,
+            signCertificateRequest,
+            DEFAULT_USER_ID,
+            userNonce);
 
-    String credentialSignature = issuerResult.certificateSignature;
+    String certificateSignature = issuerResult.certificateSignature;
     String issuerNonce = issuerResult.issuerNonce;
-    System.out.println("Encoded credentialSignature = " + credentialSignature);
+    System.out.println("Encoded certificateSignature = " + certificateSignature);
     System.out.println("Encoded issuerNonce = " + issuerNonce);
 
-    // User generate new credentialSignature
+    // The user blinds the received certificateSignature to prevent the issuer to track the
+    // certificate usage.
     userResult =
-        scdClient.userBlindCertificateSignature(
-            credentialSignature,
-            credentialInfo,
-            credentialTemplate,
+        userClient.blindCertificateSignature(
+            certificateSignature,
+            certificateData,
+            certificateTemplate,
             userPrivateKey,
-            credentialSecretsBlindingFactors,
+            certificateSecretsBlindingFactors,
             issuerNonce);
 
-    String credentialSignatureNew = userResult.certificateSignature;
-    System.out.println("Encoded credentialSignatureNew = " + credentialSignatureNew);
+    String blindedCertificateSignature = userResult.certificateSignature;
+    System.out.println("Encoded blindedCertificateSignature = " + blindedCertificateSignature);
 
-    // Verifier set verification rules
-    VerificationRuleSet verificationRuleSet = VerificationRuleSet.getDefaultInstance();
+    // A verifier sets a verification rule to:
+    // Check AGE > 18 and,
+    VerificationRuleSet.Builder verificationRuleSetBuilder = VerificationRuleSet.newBuilder();
     Predicate predicate =
         Predicate.newBuilder()
-            .setAttributeName("age")
+            .setAttributeName(AGE)
             .setPredicateType(PredicateType.GT.name())
-            .setPredicateValue(17)
+            .setPredicateValue(18)
             .build();
-    verificationRuleSet = verificationRuleSet.toBuilder().addAttributePredicate(predicate).build();
+    verificationRuleSetBuilder.addAttributePredicate(predicate);
+    // Reveal the ISSUE_TIME attribute.
+    verificationRuleSetBuilder.addRevealedAttributeName(ISSUE_TIME);
 
-    predicate =
-        Predicate.newBuilder()
-            .setAttributeName("gender")
-            .setPredicateType(PredicateType.EQ.name())
-            .setPredicateValue(1)
-            .build();
-    verificationRuleSet = verificationRuleSet.toBuilder().addAttributePredicate(predicate).build();
+    String encodedVerificationRuleSet =
+        verifierClient.protoToEncodedString(verificationRuleSetBuilder.build());
+    System.out.println("Encoded verificationRuleSet = " + encodedVerificationRuleSet);
 
-    String verificationRuleStr =
-        ScdClient.protoToEncodedString(verificationRuleSet);
-    System.out.println("Encoded verificationRuleStr = " + verificationRuleStr);
+    String verificationNonce = verifierClient.getVerificationNonce().verificationNonce;
 
-    // User prove by verification rules
-    String verificationNonce =
-        scdClient.verifierGetVerificationNonce().verificationNonce;
+    // The user proves the signed certificate data satisfying the verification rules and does not
+    // reveal any extra data.
     userResult =
-        scdClient.userProveSelectiveDisclosure(
-            verificationRuleStr,
-            credentialSignatureNew,
-            credentialInfo,
-            credentialTemplate,
+        userClient.proveSelectiveDisclosure(
+            encodedVerificationRuleSet,
+            blindedCertificateSignature,
+            certificateData,
+            certificateTemplate,
             userPrivateKey,
             verificationNonce);
 
-    String verificationRequest = userResult.verifyRequest;
-    System.out.println("Encoded verificationRequest = " + verificationRequest);
+    String verifyRequest = userResult.verifyRequest;
+    System.out.println("Encoded verifyRequest = " + verifyRequest);
 
-    // Verifier verify proof
+    // The verifier verifies the required verification rule is satisfied and extracts the required
+    // attribute.
+    // This verification should be done before calling revealedAttributeDict.
     VerifierResult verifierResult =
-        scdClient.verifierVerifySelectiveDisclosure(verificationRuleStr, verificationRequest);
-    System.out.println("result = " + verifierResult.boolResult);
+        verifierClient.verifySelectiveDisclosure(encodedVerificationRuleSet, verifyRequest);
+    System.out.println("Proof verification result = " + verifierResult.boolResult);
 
-    verifierResult =
-        scdClient.verifierGetRevealedAttrsFromVerifyRequest(verificationRequest);
-    String revealedAttributeDict = verifierResult.revealedAttributeDict;
-    AttributeDict attributeDict =
-        AttributeDict.parseFrom(Utils.stringToBytes(revealedAttributeDict));
-    System.out.println("revealedAttributeDict =" + attributeDict);
+    verifierResult = verifierClient.getRevealedAttributes(verifyRequest);
+    String encodedRevealedCertificateData = verifierResult.revealedAttributeDict;
+    AttributeDict revealedCertificateData =
+        AttributeDict.parseFrom(Utils.stringToBytes(encodedRevealedCertificateData));
+    System.out.println("revealedCertificateData =" + revealedCertificateData);
   }
 }

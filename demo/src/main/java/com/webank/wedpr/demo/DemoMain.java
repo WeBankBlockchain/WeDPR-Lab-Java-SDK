@@ -3,7 +3,9 @@
 package com.webank.wedpr.demo;
 
 import com.webank.wedpr.crypto.CryptoClient;
-import com.webank.wedpr.scd.ScdClient;
+import com.webank.wedpr.scd.IssuerClient;
+import com.webank.wedpr.scd.UserClient;
+import com.webank.wedpr.scd.VerifierClient;
 import com.webank.wedpr.vcl.VclClient;
 
 /** Demo Launcher. */
@@ -20,7 +22,9 @@ public class DemoMain {
     VclDemo.run(vclClient, 3, 4, 5);
     VclDemo.run(vclClient, -1, 4, 3);
 
-    ScdClient selectiveDisclosureClient = new ScdClient();
-    ScdDemo.run(selectiveDisclosureClient);
+    IssuerClient issuerClient = new IssuerClient();
+    UserClient userClient = new UserClient();
+    VerifierClient verifierClient = new VerifierClient();
+    ScdDemo.run(issuerClient, userClient, verifierClient);
   }
 }
