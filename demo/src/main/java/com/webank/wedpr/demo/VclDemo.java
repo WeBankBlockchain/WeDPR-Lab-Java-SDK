@@ -14,7 +14,7 @@ import com.webank.wedpr.vcl.VclResult;
 public class VclDemo {
   public static void run(VclClient vclClient, long c1Value, long c2Value, long c3Value)
       throws Exception {
-    System.out.println("\n*******\nVCL PROOF RUN\n*******");
+    System.out.println("\n*******\nVCL DEMO RUN\n*******");
     System.out.println(
         "c1_value = " + c1Value + ", c2_value = " + c2Value + ", c3_value = " + c3Value + "\n");
 

@@ -10,36 +10,34 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-/** Native interface for selective disclosure client. */
+/** Native interface for SCD client. */
 public class NativeInterface {
 
-  public static String WEDPR_SELECTIVE_DISCLOSURE_LIB_PATH;
-  public static String LIBSSL_1_1 = "libssl.so.1.1";
-  public static String LIBSSL_1_0 = "libssl.so.10";
+  public static final String WEDPR_SCD_LIB_PATH;
+  public static final String LIBSSL_1_1 = "libssl.so.1.1";
+  public static final String LIBSSL_1_0 = "libssl.so.10";
 
   static {
     try {
       String osName = System.getProperty("os.name").toLowerCase();
       if (osName.contains("windows")) {
-        WEDPR_SELECTIVE_DISCLOSURE_LIB_PATH = "/WeDPR_dynamic_lib/ffi_java_scd.dll";
+        WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/ffi_java_scd.dll";
         NativeUtils.loadLibraryFromJar("/WeDPR_dynamic_lib/libeay32md.dll");
         NativeUtils.loadLibraryFromJar("/WeDPR_dynamic_lib/ssleay32md.dll");
       } else if (osName.contains("linux")) {
         if (hasLibsslVersion(LIBSSL_1_0)) {
-          WEDPR_SELECTIVE_DISCLOSURE_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd_libssl_1_0.so";
+          WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd_libssl_1_0.so";
         } else if (hasLibsslVersion(LIBSSL_1_1)) {
-          WEDPR_SELECTIVE_DISCLOSURE_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd_libssl_1_1.so";
+          WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd_libssl_1_1.so";
         } else {
-          throw new WedprException("The Linux needs " + LIBSSL_1_1 + " or " + LIBSSL_1_0 + ".");
+          throw new WedprException("Linux requires " + LIBSSL_1_1 + " or " + LIBSSL_1_0);
         }
-
       } else if (osName.contains("mac")) {
-        WEDPR_SELECTIVE_DISCLOSURE_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd.dylib";
+        WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd.dylib";
       } else {
-        throw new WedprException("Unsupported the os " + osName + ".");
+        throw new IOException(String.format("Operating system %s is not supported.", osName));
       }
-      NativeUtils.loadLibraryFromJar(WEDPR_SELECTIVE_DISCLOSURE_LIB_PATH);
-
+      NativeUtils.loadLibraryFromJar(WEDPR_SCD_LIB_PATH);
     } catch (IOException | WedprException e) {
       throw new RuntimeException(e);
     }
@@ -54,39 +52,38 @@ public class NativeInterface {
     return version != null;
   }
 
-  public static native IssuerResult issuerMakeCertificateTemplate(String attributeTemplate);
+  public static native IssuerResult issuerMakeCertificateTemplate(String schema);
 
   public static native IssuerResult issuerSignCertificate(
-      String credentialTemplate,
-      String templateSecretKey,
-      String credentialRequest,
+      String certificateTemplate,
+      String templatePrivateKey,
+      String signRequest,
       String userId,
-      String nonce);
+      String userNonce);
 
   public static native UserResult userFillCertificate(
-      String credentialInfo, String credentialTemplate);
+      String attributeDict, String certificateTemplate);
 
   public static native UserResult userBlindCertificateSignature(
-      String credentialSignature,
-      String credentialInfo,
-      String credentialTemplate,
+      String certificateSignature,
+      String attributeDict,
+      String certificateTemplate,
       String userPrivateKey,
-      String credentialSecretsBlindingFactors,
-      String nonceCredential);
+      String certificateSecretsBlindingFactors,
+      String issuerNonce);
 
   public static native UserResult userProveSelectiveDisclosure(
-      String verificationPredicateRule,
-      String credentialSignature,
-      String credentialInfo,
-      String credentialTemplate,
+      String ruleSet,
+      String certificateSignature,
+      String attributeDict,
+      String certificateTemplate,
       String userPrivateKey,
       String verificationNonce);
 
   public static native VerifierResult verifierVerifySelectiveDisclosure(
-      String verificationPredicateRule, String verificationRequest);
+      String ruleSet, String verifyRequest);
 
-  public static native VerifierResult verifierGetRevealedAttrsFromVerifyRequest(
-      String verificationRequest);
+  public static native VerifierResult verifierGetRevealedAttributes(String verifyRequest);
 
   public static native VerifierResult verifierGetVerificationNonce();
 }
