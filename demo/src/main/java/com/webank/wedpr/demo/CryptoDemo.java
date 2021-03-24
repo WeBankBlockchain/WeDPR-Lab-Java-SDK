@@ -4,6 +4,9 @@ package com.webank.wedpr.demo;
 
 import com.webank.wedpr.crypto.CryptoClient;
 import com.webank.wedpr.crypto.CryptoResult;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 
 /** Minimalist demo of WeDPR Crypto Tools. */
@@ -11,29 +14,36 @@ public class CryptoDemo {
   public static void run(CryptoClient cryptoClient) throws Exception {
     System.out.println("\n*******\nCRYPTO DEMO RUN\n*******");
 
-    CryptoResult cryptoResult = cryptoClient.secp256k1GenKeyPair();
-    String publicKey = cryptoResult.publicKey;
-    String privateKey = cryptoResult.privateKey;
-    System.out.println("public key = " + publicKey);
-    System.out.println("private key = " + privateKey);
+//    CryptoResult cryptoResult = cryptoClient.secp256k1GenKeyPair();
+//    String publicKey = cryptoResult.publicKey;
+//    String privateKey = cryptoResult.privateKey;
+//    System.out.println("public key = " + publicKey);
+//    System.out.println("private key = " + privateKey);
 
     // Base64 encoding for "WeDPR Demo", which is currently required to pass bytes input to API.
     // TODO: Allow non-encoded UTF8 input.
-    String message = Base64.getEncoder().encodeToString("WeDPR Demo".getBytes());
-    String messageHash = cryptoClient.keccak256Hash(message).hash;
-    System.out.println("messageHash = " + messageHash);
+//    String message = Base64.getEncoder().encodeToString("WeDPR Demo".getBytes());
+    byte[] message = "WeDPR Demo".getBytes();
+    byte[] messageHashBytes = cryptoClient.keccak256Hash(message).hash;
+    System.out.println("message = " + Arrays.toString(message));
 
-    String signature = cryptoClient.secp256k1Sign(privateKey, messageHash).signature;
-    System.out.println("signature = " + signature);
+    System.out.println("message = " + Base64.getEncoder().encodeToString(message));
 
-    boolean result = cryptoClient.secp256k1Verify(publicKey, messageHash, signature).booleanResult;
-    System.out.println("signature verify result = " + result);
-
-    String encryptedData = cryptoClient.secp256k1EciesEncrypt(publicKey, messageHash).encryptedData;
-    System.out.println("encryptedData = " + encryptedData);
-
-    String decryptedData =
-        cryptoClient.secp256k1EciesDecrypt(privateKey, encryptedData).decryptedData;
-    System.out.println("decryptedData = " + decryptedData);
+    System.out.println("messageHash = " + Base64.getEncoder().encodeToString(messageHashBytes));
+    System.out.println("messageHash = " + Arrays.toString(messageHashBytes));
+    String messageHash = messageHashBytes.toString();
+//
+//    String signature = cryptoClient.secp256k1Sign(privateKey, messageHash).signature;
+//    System.out.println("signature = " + signature);
+//
+//    boolean result = cryptoClient.secp256k1Verify(publicKey, messageHash, signature).booleanResult;
+//    System.out.println("signature verify result = " + result);
+//
+//    String encryptedData = cryptoClient.secp256k1EciesEncrypt(publicKey, messageHash).encryptedData;
+//    System.out.println("encryptedData = " + encryptedData);
+//
+//    String decryptedData =
+//        cryptoClient.secp256k1EciesDecrypt(privateKey, encryptedData).decryptedData;
+//    System.out.println("decryptedData = " + decryptedData);
   }
 }

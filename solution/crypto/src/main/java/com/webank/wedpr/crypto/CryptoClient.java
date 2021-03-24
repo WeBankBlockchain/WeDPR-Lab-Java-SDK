@@ -78,7 +78,7 @@ public class CryptoClient {
    * @return CryptoResult containing data for hash.
    * @throws WedprException if any error occurred.
    */
-  public CryptoResult keccak256Hash(String message) throws WedprException {
+  public CryptoResult keccak256Hash(byte[] message) throws WedprException {
     return NativeInterface.keccak256Hash(message).expectNoError();
   }
 }

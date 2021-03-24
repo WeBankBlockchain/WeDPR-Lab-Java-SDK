@@ -18,7 +18,7 @@ public class NativeInterface {
       } else if (osName.contains("linux")) {
         libPathInJar = "/WeDPR_dynamic_lib/libffi_java_crypto.so";
       } else if (osName.contains("mac")) {
-        libPathInJar = "/WeDPR_dynamic_lib/libffi_java_crypto.dylib";
+        libPathInJar = "/WeDPR_dynamic_lib/libffi_java_crypto_binary.dylib";
       } else {
         throw new IOException(String.format("Operating system %s is not supported.", osName));
       }
@@ -41,5 +41,5 @@ public class NativeInterface {
   public static native CryptoResult secp256k1Verify(
       String publicKey, String messageHash, String signature);
 
-  public static native CryptoResult keccak256Hash(String message);
+  public static native CryptoResult keccak256Hash(byte[] message);
 }

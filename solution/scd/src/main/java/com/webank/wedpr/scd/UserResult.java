@@ -17,6 +17,7 @@ public class UserResult extends WedprResult {
   public String userNonce;
   public String certificateSignature;
   public String verifyRequest;
+  public byte[] rrrr;
 
   /** Expects no error occurred, otherwise throws an Exception. */
   public UserResult expectNoError() throws WedprException {

@@ -14,7 +14,7 @@ public class CryptoResult extends WedprResult {
   public String signature;
   public String publicKey;
   public String privateKey;
-  public String hash;
+  public byte[] hash;
   public boolean booleanResult;
   public String encryptedData;
   public String decryptedData;

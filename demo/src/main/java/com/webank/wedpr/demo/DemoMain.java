@@ -15,16 +15,16 @@ public class DemoMain {
     CryptoClient cryptoClient = new CryptoClient();
     CryptoDemo.run(cryptoClient);
 
-    VclClient vclClient = new VclClient();
-    VclDemo.run(vclClient, 2, 2, 4);
-    VclDemo.run(vclClient, 3, 4, 12);
-    VclDemo.run(vclClient, 1, 2, 3);
-    VclDemo.run(vclClient, 3, 4, 5);
-    VclDemo.run(vclClient, -1, 4, 3);
-
-    IssuerClient issuerClient = new IssuerClient();
-    UserClient userClient = new UserClient();
-    VerifierClient verifierClient = new VerifierClient();
-    ScdDemo.run(issuerClient, userClient, verifierClient);
+//    VclClient vclClient = new VclClient();
+//    VclDemo.run(vclClient, 2, 2, 4);
+//    VclDemo.run(vclClient, 3, 4, 12);
+//    VclDemo.run(vclClient, 1, 2, 3);
+//    VclDemo.run(vclClient, 3, 4, 5);
+//    VclDemo.run(vclClient, -1, 4, 3);
+//
+//    IssuerClient issuerClient = new IssuerClient();
+//    UserClient userClient = new UserClient();
+//    VerifierClient verifierClient = new VerifierClient();
+//    ScdDemo.run(issuerClient, userClient, verifierClient);
   }
 }
