@@ -3,6 +3,7 @@
 package com.webank.wedpr.demo;
 
 import com.webank.wedpr.crypto.CryptoClient;
+import com.webank.wedpr.ktb.hdk.HdkClient;
 import com.webank.wedpr.scd.IssuerClient;
 import com.webank.wedpr.scd.UserClient;
 import com.webank.wedpr.scd.VerifierClient;
@@ -26,5 +27,11 @@ public class DemoMain {
     UserClient userClient = new UserClient();
     VerifierClient verifierClient = new VerifierClient();
     ScdDemo.run(issuerClient, userClient, verifierClient);
+
+    HdkClient hdkClient = new HdkClient();
+    KtbDemo.run(hdkClient);
+
+
+
   }
 }
