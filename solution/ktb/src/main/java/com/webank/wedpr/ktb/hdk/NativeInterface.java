@@ -34,5 +34,6 @@ public class NativeInterface {
 
   public static native HdkResult createMasterKeyEn(String password, String mnemonic);
 
-  public static native HdkResult deriveExtendedKey(String masterKey, int purposeType, int assetType, int account, int change, int addressIndex);
+  public static native HdkResult deriveExtendedKey(
+      String masterKey, int purposeType, int assetType, int account, int change, int addressIndex);
 }
