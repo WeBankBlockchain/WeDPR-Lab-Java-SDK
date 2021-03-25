@@ -20,5 +20,6 @@ dependencies {
     compile project(':solution:crypto')
     compile project(':solution:vcl')
     compile project(':solution:scd')
+    compile project(':solution:ktb')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
