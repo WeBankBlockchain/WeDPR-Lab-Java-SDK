@@ -30,8 +30,5 @@ public class DemoMain {
 
     HdkClient hdkClient = new HdkClient();
     KtbDemo.run(hdkClient);
-
-
-
   }
 }

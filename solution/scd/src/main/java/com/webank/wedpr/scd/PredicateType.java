@@ -2,13 +2,11 @@
 
 package com.webank.wedpr.scd;
 
-/**
- * Predicate types supported by SCD.
- */
+/** Predicate types supported by SCD. */
 public enum PredicateType {
-  GE,  // >
-  LE,  // <
-  GT,  // >=
-  LT,  // <=
-  EQ   // ==
+  GE, // >
+  LE, // <
+  GT, // >=
+  LT, // <=
+  EQ // ==
 }
