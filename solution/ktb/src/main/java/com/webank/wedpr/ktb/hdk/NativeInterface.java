@@ -5,12 +5,12 @@ package com.webank.wedpr.ktb.hdk;
 import com.webank.wedpr.common.NativeUtils;
 import java.io.IOException;
 
-/** Native interface for Crypto client. */
+/** Native interface for HDK client. */
 public class NativeInterface {
 
   static {
     try {
-      // Load the dynamic library of Crypto on different operating systems.
+      // Load the dynamic library of HDK on different operating systems.
       String osName = System.getProperty("os.name").toLowerCase();
       String libPathInJar;
       if (osName.contains("windows")) {
