@@ -1,3 +1,5 @@
+// Copyright 2020 WeDPR Lab Project Authors. Licensed under Apache-2.0.
+
 package com.webank.wedpr.vcl;
 
 import com.webank.wedpr.common.WedprException;

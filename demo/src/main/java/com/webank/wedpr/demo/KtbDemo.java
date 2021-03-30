@@ -5,16 +5,16 @@ package com.webank.wedpr.demo;
 import com.webank.wedpr.ktb.hdk.HdkClient;
 import com.webank.wedpr.ktb.hdk.HdkResult;
 
-/** Minimalist demo of WeDPR Crypto Tools. */
+/** Minimalist demo of key tool box (KTB). */
 public class KtbDemo {
   public static void run(HdkClient hdkClient) throws Exception {
-    System.out.println("\n*******\nHDK DEMO RUN\n*******");
+    System.out.println("\n*******\nKTB DEMO RUN\n*******");
 
     HdkResult hdkResult = hdkClient.createMnemonicEn(24);
     String mnemonic = hdkResult.mnemonic;
     System.out.println("mnemonic = " + mnemonic);
 
-    String password = "123456";
+    String password = "Do not use real password";
     hdkResult = hdkClient.createMasterKeyEn(password, mnemonic);
     String masterKey = hdkResult.masterKey;
     System.out.println("masterKey = " + masterKey);
@@ -24,7 +24,6 @@ public class KtbDemo {
     int account = 1;
     int change = 0;
     int addressIndex = 1000;
-
     hdkResult =
         hdkClient.deriveExtendedKey(
             masterKey, purposeType, assetType, account, change, addressIndex);
