@@ -31,5 +31,5 @@ jobs:
           cp ./java_sdk_dynamic_lib_linux/* ./demo/src/main/resources/WeDPR_dynamic_lib/
       - name: compile and run ut
         run: bash ./gradlew clean build
-      - name: run demo
-        run: cd demo/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.demo.DemoMain
+      # - name: run demo
+      #   run: cd demo/dist/ && java -cp "apps/*:conf/:libs/*" com.webank.wedpr.demo.DemoMain
