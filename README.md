@@ -4,6 +4,8 @@
 
 WeDPR-Lab-Java-SDK是WeDPR-Lab的Java客户端。
 
+[参考文档](https://wedpr-lab.readthedocs.io/zh_CN/latest/docs/sdk/java_sdk.html)
+
 ## 环境依赖
 
 WeDPR Lab Java SDK 依赖如下：
