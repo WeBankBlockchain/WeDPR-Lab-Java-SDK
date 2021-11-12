@@ -14,6 +14,8 @@ WeDPR Lab Java SDK 依赖如下：
 | :-: | :-: |
 | JAVA | JDK1.8+ |
 
+文档中提供的预编译类库仅支持x86与x86_64架构，如需使用arm架构的动态库，需使用WeDPR-Lab-Core或WeDPR-Lab-Crypto的ffi模块编译生成动态库
+
 ## 快速体验
 
 ```bash
