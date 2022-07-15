@@ -11,16 +11,16 @@ import com.webank.wedpr.common.WedprResult;
  * <p>This is an easy way to return multiple data from a single JNI interface.
  */
 public class IssuerResult extends WedprResult {
-  public String certificateTemplate;
-  public String templatePrivateKey;
-  public String certificateSignature;
-  public String issuerNonce;
+    public String certificateTemplate;
+    public String templatePrivateKey;
+    public String certificateSignature;
+    public String issuerNonce;
 
-  /** Expects no error occurred, otherwise throws an Exception. */
-  public IssuerResult expectNoError() throws WedprException {
-    if (hasError()) {
-      throw new WedprException(wedprErrorMessage);
+    /** Expects no error occurred, otherwise throws an Exception. */
+    public IssuerResult expectNoError() throws WedprException {
+        if (hasError()) {
+            throw new WedprException(wedprErrorMessage);
+        }
+        return this;
     }
-    return this;
-  }
 }

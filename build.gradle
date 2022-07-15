@@ -4,69 +4,279 @@
  * This is a general purpose Gradle build.
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
+plugins {
+    id 'maven-publish'
+    id 'java-library'
+    id 'java'
+    id 'org.ajoberstar.grgit' version '4.1.1'
+    id 'com.github.sherter.google-java-format' version '0.9'
+}
+println("Notice: current gradle version is " + gradle.gradleVersion)
 
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
+// check.dependsOn integrationTest
+// integrationTest.mustRunAfter test
+// Additional attribute definition
+ext {
+    if (!project.hasProperty("ossrhUsername")) {
+        ossrhUsername = "xxx"
+    }
+
+    if (!project.hasProperty("ossrhPassword")) {
+        ossrhPassword = "xxx"
+    }
+    junitVersion = '4.13.2'
+    guavaVersion = '30.1.1-jre'
+	protobufVersion = '3.9.1'
+	lombokVersion = '1.18.2'
+}
+
+allprojects {
+    group = 'com.webank'
+    version = '1.4.0-SNAPSHOT'
+    apply plugin: 'maven-publish'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: 'signing'
 
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+
+    jacoco {
+        toolVersion = "0.8.6"
+    }
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            html.enabled false
+        }
+    }
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
+// In this section you declare where to find the dependencies of your project
     repositories {
-        mavenLocal()
         mavenCentral()
-        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://oss.sonatype.org/service/local/staging/deploy/maven2" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
-    clean {
-        delete 'dist'
-        delete 'build'
-        delete 'bin'
-        delete 'logs'
+    dependencies {
+        testImplementation("junit:junit:${junitVersion}")
+        testImplementation("com.google.guava:guava:${guavaVersion}")
+	    implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
+	    implementation("org.projectlombok:lombok:${lombokVersion}")
     }
 
-    sourceSets {
+    clean.doLast {
+        file("dist/apps/").deleteDir()
+        file("dist/conf/").deleteDir()
+        file("dist/lib/").deleteDir()
+    }
+}
+
+subprojects {
+   sourceSets {
         main {
             java {
                 srcDir 'src/main/java'
             }
+
             resources {
                 srcDir 'src/main/resources'
             }
         }
     }
-
     jar {
-        destinationDir file('dist/apps')
-        archiveName project.name + '.jar'
+        destinationDir file("dist/apps")
+        archiveName "WeDPR-Lab-Java-SDK-" + project.name + "-" + project.version + ".jar"
 
-        exclude '**/*.xml'
-        exclude '**/*.properties'
-        exclude '**/*.crt'
-        exclude '**/*.key'
-        exclude '**/*.secret'
-        exclude '**/*.so'
-        exclude '**/*.dll'
-        exclude '**/*.dylib'
+        exclude "**/*.xml"
+        exclude "**/*.properties"
+        manifest {
+            try {
+                def repo = grgit.open(currentDir: project.rootDir)
+                if (repo != null) {
+                    def date = new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                    def branch = repo.branch.getCurrent().getName()
+                    def commit = repo.head().getAbbreviatedId(40)
+
+                    attributes(["Implementation-Timestamp": date,
+                                "Git-Branch"              : branch,
+                                "Git-Commit"              : commit
+                    ])
+
+                    logger.info("  Commit : ")
+                    logger.info("  => date: {}", date)
+                    logger.info("  => branch: {}", branch)
+                    logger.info("  => commit: {}", commit)
+                }
+            } catch (Exception e) {
+                logger.warn(' .git not exist, cannot found commit info, e: {}', e)
+            }
+        } from sourceSets.main.output
 
         doLast {
             copy {
-                from configurations.runtime
-                into 'dist/libs'
+                from file("src/test/resources/")
+                into "dist/conf"
             }
             copy {
-                from file('src/main/resources/')
-                into 'dist/conf'
+                from configurations.runtimeClasspath
+                into "dist/lib"
             }
             copy {
-                from file('tools/')
-                into 'dist/tools/'
+                from file("build/libs/")
+                into "dist/apps"
             }
         }
     }
+    clean.doLast {
+        file("dist/apps/").deleteDir()
+        file("dist/conf/").deleteDir()
+        file("dist/lib/").deleteDir()
+    }
 }
+
+sourceSets {
+    main {
+        java {
+			srcDir "common/src/main/java"
+            srcDir "solution/crypto/src/main/java"
+            srcDir "solution/vcl/src/main/java"
+            srcDir "solution/scd/src/main/java"
+            srcDir "solution/ktb/src/main/java"
+        }
+        buildscript
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+googleJavaFormat {
+    toolVersion = '1.7'
+    options style: 'AOSP'
+    source = sourceSets*.allJava
+    include '**/*.java'
+}
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+            artifactId project.name
+            groupId project.group
+            version project.version
+
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'WeDPR-Lab-Java-SDK'
+                description = 'WeDPR-Lab-Java-SDK'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'zhangsan'
+                        name = 'zhangsan'
+                        email = 'zhangsan@example.com'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK'
+                    url = 'https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoURL = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoURL = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = !version.endsWith("SNAPSHOT") ? releasesRepoURL : snapshotsRepoURL
+
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
+    }
+}
+
+jar {
+    // destinationDir file('dist/apps')
+    archiveName project.name + '-' + project.version + '.jar'
+    exclude '**/*.xml'
+    exclude '**/*.properties'
+
+    manifest {
+        try {
+            def repo = grgit.open(currentDir: project.rootDir)
+            if (repo != null) {
+                def date = new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                def branch = repo.branch.getCurrent().getName()
+                def commit = repo.head().getAbbreviatedId(40)
+
+                attributes(["Implementation-Timestamp": date,
+                            "Git-Branch"              : branch,
+                            "Git-Commit"              : commit
+                ])
+
+                logger.info("  Commit : ")
+                logger.info("  => date: {}", date)
+                logger.info("  => branch: {}", branch)
+                logger.info("  => commit: {}", commit)
+            }
+        } catch (Exception e) {
+            logger.warn(' .git not exist, cannot found commit info, e: {}', e)
+        }
+    } from sourceSets.main.output
+
+    doLast {
+        copy {
+            from destinationDirectory
+            into 'dist/apps'
+        }
+        copy {
+            from configurations.runtimeClasspath
+            into 'dist/lib'
+        }
+        copy {
+            from file('src/test/resources/config-example.toml')
+            from file('src/test/resources/clog.ini')
+            from file('src/test/resources/applicationContext-sample.xml')
+            from file('src/test/resources/log4j.properties')
+            into 'dist/conf'
+        }
+    }
+}
+check.dependsOn jacocoTestReport

@@ -4,17 +4,17 @@
 package com.webank.wedpr.scd.proto;
 
 public interface CertificateSignatureOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.CertificateSignature)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.CertificateSignature)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>string certificate_signature = 1;</code> */
-  String getCertificateSignature();
-  /** <code>string certificate_signature = 1;</code> */
-  com.google.protobuf.ByteString getCertificateSignatureBytes();
+    /** <code>string certificate_signature = 1;</code> */
+    String getCertificateSignature();
+    /** <code>string certificate_signature = 1;</code> */
+    com.google.protobuf.ByteString getCertificateSignatureBytes();
 
-  /** <code>string signature_correctness_proof = 2;</code> */
-  String getSignatureCorrectnessProof();
-  /** <code>string signature_correctness_proof = 2;</code> */
-  com.google.protobuf.ByteString getSignatureCorrectnessProofBytes();
+    /** <code>string signature_correctness_proof = 2;</code> */
+    String getSignatureCorrectnessProof();
+    /** <code>string signature_correctness_proof = 2;</code> */
+    com.google.protobuf.ByteString getSignatureCorrectnessProofBytes();
 }

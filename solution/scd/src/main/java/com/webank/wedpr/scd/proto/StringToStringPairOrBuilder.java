@@ -4,17 +4,17 @@
 package com.webank.wedpr.scd.proto;
 
 public interface StringToStringPairOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.StringToStringPair)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.StringToStringPair)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>string key = 1;</code> */
-  String getKey();
-  /** <code>string key = 1;</code> */
-  com.google.protobuf.ByteString getKeyBytes();
+    /** <code>string key = 1;</code> */
+    String getKey();
+    /** <code>string key = 1;</code> */
+    com.google.protobuf.ByteString getKeyBytes();
 
-  /** <code>string value = 2;</code> */
-  String getValue();
-  /** <code>string value = 2;</code> */
-  com.google.protobuf.ByteString getValueBytes();
+    /** <code>string value = 2;</code> */
+    String getValue();
+    /** <code>string value = 2;</code> */
+    com.google.protobuf.ByteString getValueBytes();
 }

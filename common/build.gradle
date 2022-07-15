@@ -1,21 +1,13 @@
+// Apply the java-library plugin to add support for Java Library
 plugins {
     id 'java'
-    id 'com.github.sherter.google-java-format' version '0.8'
-
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
 }
 
-group 'com.webank'
-version '1.0.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-test.onlyIf { project.hasProperty('runTest') }
-verifyGoogleJavaFormat.onlyIf { project.hasProperty('runVerifyGoogleJavaFormat') }
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
 }

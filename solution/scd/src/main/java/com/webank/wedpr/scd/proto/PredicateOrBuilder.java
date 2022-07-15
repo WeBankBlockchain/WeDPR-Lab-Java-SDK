@@ -4,20 +4,20 @@
 package com.webank.wedpr.scd.proto;
 
 public interface PredicateOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.Predicate)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.Predicate)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>string attribute_name = 1;</code> */
-  String getAttributeName();
-  /** <code>string attribute_name = 1;</code> */
-  com.google.protobuf.ByteString getAttributeNameBytes();
+    /** <code>string attribute_name = 1;</code> */
+    String getAttributeName();
+    /** <code>string attribute_name = 1;</code> */
+    com.google.protobuf.ByteString getAttributeNameBytes();
 
-  /** <code>string predicate_type = 2;</code> */
-  String getPredicateType();
-  /** <code>string predicate_type = 2;</code> */
-  com.google.protobuf.ByteString getPredicateTypeBytes();
+    /** <code>string predicate_type = 2;</code> */
+    String getPredicateType();
+    /** <code>string predicate_type = 2;</code> */
+    com.google.protobuf.ByteString getPredicateTypeBytes();
 
-  /** <code>uint64 predicate_value = 3;</code> */
-  long getPredicateValue();
+    /** <code>uint64 predicate_value = 3;</code> */
+    long getPredicateValue();
 }
