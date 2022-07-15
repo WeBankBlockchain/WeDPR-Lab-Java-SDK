@@ -13,5 +13,4 @@ include 'solution:vcl'
 include 'solution:scd'
 include 'solution:ktb'
 include 'solution:crypto'
-include 'demo'
-
+include "demo"

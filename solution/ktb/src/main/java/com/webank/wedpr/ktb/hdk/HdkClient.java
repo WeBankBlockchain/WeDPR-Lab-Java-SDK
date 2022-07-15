@@ -5,8 +5,7 @@ package com.webank.wedpr.ktb.hdk;
 import com.webank.wedpr.common.WedprException;
 
 /**
- * Client class used by KTB-HDK. This is the main interface class for Java apps using HDK
- * functions.
+ * Client class used by KTB-HDK. This is the main interface class for Java apps using HDK functions.
  */
 public class HdkClient {
 
