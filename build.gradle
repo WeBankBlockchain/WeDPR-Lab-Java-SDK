@@ -10,6 +10,7 @@ plugins {
     id 'java'
     id 'org.ajoberstar.grgit' version '4.1.1'
     id 'com.github.sherter.google-java-format' version '0.9'
+    id 'com.google.protobuf' version '0.8.14'
 }
 println("Notice: current gradle version is " + gradle.gradleVersion)
 
@@ -30,6 +31,7 @@ ext {
 	lombokVersion = '1.18.2'
 }
 
+
 allprojects {
     group = 'com.webank'
     version = '1.4.0-SNAPSHOT'
@@ -40,6 +42,27 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'jacoco'
     apply plugin: 'signing'
+    apply plugin: 'com.google.protobuf'
+
+     dependencies {
+        implementation 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+    }
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.2.0"
+        }
+        plugins {
+            grpc {
+                artifact = 'io.grpc:protoc-gen-grpc-java:1.4.0'
+            }
+        }
+        generateProtoTasks {
+            all()*.plugins {
+                grpc {}
+            }
+        }
+        generatedFilesBaseDir = "$projectDir/proto"
+    }
 
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -68,14 +91,14 @@ allprojects {
     dependencies {
         testImplementation("junit:junit:${junitVersion}")
         testImplementation("com.google.guava:guava:${guavaVersion}")
-	    implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
-	    implementation("org.projectlombok:lombok:${lombokVersion}")
     }
 
     clean.doLast {
+		file("build").deleteDir()
         file("dist/apps/").deleteDir()
         file("dist/conf/").deleteDir()
         file("dist/lib/").deleteDir()
+        delete protobuf.generatedFilesBaseDir
     }
 }
 
@@ -85,7 +108,6 @@ subprojects {
             java {
                 srcDir 'src/main/java'
             }
-
             resources {
                 srcDir 'src/main/resources'
             }
@@ -136,10 +158,18 @@ subprojects {
         }
     }
     clean.doLast {
+		file("build").deleteDir()
         file("dist/apps/").deleteDir()
         file("dist/conf/").deleteDir()
         file("dist/lib/").deleteDir()
     }
+}
+
+dependencies {
+    testImplementation("junit:junit:${junitVersion}")
+    testImplementation("com.google.guava:guava:${guavaVersion}")
+    implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
+    implementation("org.projectlombok:lombok:${lombokVersion}")
 }
 
 sourceSets {
@@ -150,6 +180,11 @@ sourceSets {
             srcDir "solution/vcl/src/main/java"
             srcDir "solution/scd/src/main/java"
             srcDir "solution/ktb/src/main/java"
+            srcDir "solution/acv/src/main/java"
+            srcDir "proto/main/java/com/webank/wedpr/acv/proto/"
+        }
+        proto {
+            srcDir "solution/acv/src/main/proto"
         }
         buildscript
         resources {
@@ -161,7 +196,8 @@ googleJavaFormat {
     toolVersion = '1.7'
     options style: 'AOSP'
     source = sourceSets*.allJava
-    include '**/*.java'
+    include 'common/*.java'
+    include 'solutions/*.java'
 }
 javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')
