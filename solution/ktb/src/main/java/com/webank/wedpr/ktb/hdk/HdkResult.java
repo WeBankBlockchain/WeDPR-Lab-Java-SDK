@@ -11,16 +11,16 @@ import com.webank.wedpr.common.WedprResult;
  * <p>This is an easy way to return multiple data from a single JNI interface.
  */
 public class HdkResult extends WedprResult {
-  public String mnemonic;
-  public String masterKey;
-  public String extendedPrivateKey;
-  public String extendedPublicKey;
+    public String mnemonic;
+    public String masterKey;
+    public String extendedPrivateKey;
+    public String extendedPublicKey;
 
-  /** Expects no error occurred, otherwise throws an Exception. */
-  public HdkResult expectNoError() throws WedprException {
-    if (hasError()) {
-      throw new WedprException(wedprErrorMessage);
+    /** Expects no error occurred, otherwise throws an Exception. */
+    public HdkResult expectNoError() throws WedprException {
+        if (hasError()) {
+            throw new WedprException(wedprErrorMessage);
+        }
+        return this;
     }
-    return this;
-  }
 }

@@ -11,6 +11,7 @@ plugins {
     id 'org.ajoberstar.grgit' version '4.1.1'
     id 'com.github.sherter.google-java-format' version '0.9'
 }
+println("Notice: current gradle version is " + gradle.gradleVersion)
 
 // check.dependsOn integrationTest
 // integrationTest.mustRunAfter test
@@ -155,6 +156,12 @@ sourceSets {
             srcDir 'src/main/resources'
         }
     }
+}
+googleJavaFormat {
+    toolVersion = '1.7'
+    options style: 'AOSP'
+    source = sourceSets*.allJava
+    include '**/*.java'
 }
 javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')

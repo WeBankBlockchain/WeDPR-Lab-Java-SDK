@@ -11,19 +11,19 @@ import com.webank.wedpr.common.WedprResult;
  * <p>This is an easy way to return multiple data from a single JNI interface.
  */
 public class CryptoResult extends WedprResult {
-  public String signature;
-  public String publicKey;
-  public String privateKey;
-  public String hash;
-  public boolean booleanResult;
-  public String encryptedData;
-  public String decryptedData;
+    public String signature;
+    public String publicKey;
+    public String privateKey;
+    public String hash;
+    public boolean booleanResult;
+    public String encryptedData;
+    public String decryptedData;
 
-  /** Expects no error occurred, otherwise throws an Exception. */
-  public CryptoResult expectNoError() throws WedprException {
-    if (hasError()) {
-      throw new WedprException(wedprErrorMessage);
+    /** Expects no error occurred, otherwise throws an Exception. */
+    public CryptoResult expectNoError() throws WedprException {
+        if (hasError()) {
+            throw new WedprException(wedprErrorMessage);
+        }
+        return this;
     }
-    return this;
-  }
 }

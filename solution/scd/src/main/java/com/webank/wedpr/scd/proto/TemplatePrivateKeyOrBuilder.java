@@ -4,12 +4,12 @@
 package com.webank.wedpr.scd.proto;
 
 public interface TemplatePrivateKeyOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.TemplatePrivateKey)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.TemplatePrivateKey)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>string key = 1;</code> */
-  String getKey();
-  /** <code>string key = 1;</code> */
-  com.google.protobuf.ByteString getKeyBytes();
+    /** <code>string key = 1;</code> */
+    String getKey();
+    /** <code>string key = 1;</code> */
+    com.google.protobuf.ByteString getKeyBytes();
 }

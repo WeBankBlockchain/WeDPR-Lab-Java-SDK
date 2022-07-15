@@ -4,24 +4,24 @@
 package com.webank.wedpr.scd.proto;
 
 public interface VerifyRequestOrBuilder
-    extends
-    // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.VerifyRequest)
-    com.google.protobuf.MessageOrBuilder {
+        extends
+        // @@protoc_insertion_point(interface_extends:com.webank.wedpr.scd.proto.VerifyRequest)
+        com.google.protobuf.MessageOrBuilder {
 
-  /** <code>.com.webank.wedpr.scd.proto.CertificateTemplate certificate_template = 1;</code> */
-  boolean hasCertificateTemplate();
-  /** <code>.com.webank.wedpr.scd.proto.CertificateTemplate certificate_template = 1;</code> */
-  com.webank.wedpr.scd.proto.CertificateTemplate getCertificateTemplate();
-  /** <code>.com.webank.wedpr.scd.proto.CertificateTemplate certificate_template = 1;</code> */
-  com.webank.wedpr.scd.proto.CertificateTemplateOrBuilder getCertificateTemplateOrBuilder();
+    /** <code>.com.webank.wedpr.scd.proto.CertificateTemplate certificate_template = 1;</code> */
+    boolean hasCertificateTemplate();
+    /** <code>.com.webank.wedpr.scd.proto.CertificateTemplate certificate_template = 1;</code> */
+    com.webank.wedpr.scd.proto.CertificateTemplate getCertificateTemplate();
+    /** <code>.com.webank.wedpr.scd.proto.CertificateTemplate certificate_template = 1;</code> */
+    com.webank.wedpr.scd.proto.CertificateTemplateOrBuilder getCertificateTemplateOrBuilder();
 
-  /** <code>string verification_proof = 2;</code> */
-  String getVerificationProof();
-  /** <code>string verification_proof = 2;</code> */
-  com.google.protobuf.ByteString getVerificationProofBytes();
+    /** <code>string verification_proof = 2;</code> */
+    String getVerificationProof();
+    /** <code>string verification_proof = 2;</code> */
+    com.google.protobuf.ByteString getVerificationProofBytes();
 
-  /** <code>string verification_nonce = 3;</code> */
-  String getVerificationNonce();
-  /** <code>string verification_nonce = 3;</code> */
-  com.google.protobuf.ByteString getVerificationNonceBytes();
+    /** <code>string verification_nonce = 3;</code> */
+    String getVerificationNonce();
+    /** <code>string verification_nonce = 3;</code> */
+    com.google.protobuf.ByteString getVerificationNonceBytes();
 }
