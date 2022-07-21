@@ -13,6 +13,8 @@ dependencies {
     implementation project(':solution:scd')
     api project(':solution:vcl')
     implementation project(':solution:vcl')
+    implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
+    implementation("org.projectlombok:lombok:${lombokVersion}")
 }
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava

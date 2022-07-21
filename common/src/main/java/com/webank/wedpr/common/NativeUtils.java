@@ -1,82 +1,101 @@
-// Copyright 2020 WeDPR Lab Project Authors. Licensed under Apache-2.0.
-
 package com.webank.wedpr.common;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.*;
 
-/** Shared utility functions for native interfaces (JNI). */
+/**
+ * load native resource
+ *
+ * @author aaronchu @Description
+ * @data 2020/06/18
+ */
 public class NativeUtils {
-    private static final int MIN_FILENAME_LENGTH = 3;
-    private static final String DIR_PREFIX = "wedpr_native_utils";
-    private static File temporaryDir;
 
-    /**
-     * Loads dynamic library of native interfaces from a Jar file. The library file will be copied
-     * into a temporary directory and then loaded into memory, and will be deleted after Java
-     * runtime exits.
-     */
-    public static synchronized void loadLibraryFromJar(String pathInJar) throws IOException {
-        // Obtain libFilename from pathInJar.
-        String libFilename = checkAndExtractLibFilename(pathInJar);
+    public static void loadLibrary(String resourcePath) throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        loadLibrary(resourcePath, classLoader);
+    }
 
-        // Get a writable temporary path for the library file.
-        File tempLibFile = getTempFilePath(libFilename);
+    public static boolean loadLibraryFromLibraryPath(String libraryDirPath, String resourcePath)
+            throws IOException {
+        String fileName = deduceFileName(resourcePath);
+        File libraryFilePath = new File(new File(libraryDirPath), fileName);
+        if (!libraryFilePath.exists() || !new File(libraryDirPath).exists()) {
+            return false;
+        }
+        System.load(libraryFilePath.getAbsolutePath());
+        return true;
+    }
 
-        // Copy the library file from jar package to a temporary directory.
-        try (InputStream inputStream = NativeUtils.class.getResourceAsStream(pathInJar)) {
-            if (inputStream == null) {
-                tempLibFile.delete();
-                throw new FileNotFoundException(
-                        String.format(
-                                "The WeDPR dynamic library file was not found in '%s'.",
-                                pathInJar));
+    public static void loadLibrary(String resourcePath, ClassLoader classLoader)
+            throws IOException {
+        String libraryDirPath = System.getProperty("java.library.ffipath");
+        // load the library from the libraryPath
+        if (libraryDirPath != null && !libraryDirPath.isEmpty()) {
+            if (loadLibraryFromLibraryPath(libraryDirPath, resourcePath)) {
+                return;
             }
-            Files.copy(inputStream, tempLibFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            // Other IO errors occurred.
-            tempLibFile.delete();
-            throw e;
         }
 
-        // Load the library file.
-        try {
-            System.load(tempLibFile.getAbsolutePath());
+        File tmpDir = new File(System.getProperty("user.home"));
+        if (!tmpDir.exists() || !tmpDir.isDirectory()) {
+            throw new IOException("user dir unavailable");
+        }
+        File ffiDir = new File(new File(tmpDir, ".fisco"), "nativeutils");
+
+        if (!ffiDir.exists() || !ffiDir.isDirectory()) {
+            if (!ffiDir.mkdirs()) {
+                throw new IOException("failed to create temp folder");
+            }
+        }
+
+        String fileName = deduceFileName(resourcePath);
+        File tmpFile = new File(ffiDir, fileName);
+
+        // To make sure write and load is atomic, incase p1 writes fails p2 load
+        File lockFile = new File(ffiDir, "native.lock");
+        lockFile.deleteOnExit();
+        FileLock lock = null;
+        try (FileChannel c = new FileOutputStream(lockFile, true).getChannel()) {
+            lock = c.lock();
+
+            try (InputStream input = classLoader.getResourceAsStream(resourcePath); ) {
+                if (input == null) {
+                    throw new IOException(
+                            "Resource not found:"
+                                    + resourcePath
+                                    + " for classloader "
+                                    + classLoader.toString());
+                }
+                Files.copy(input, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (AccessDeniedException e) {
+                // In case that p1 load fails p2 write
+            }
+
+            System.load(tmpFile.getAbsolutePath());
         } finally {
-            // The library file will be deleted after Java runtime exits.
-            tempLibFile.deleteOnExit();
+            if (lock != null) {
+                try {
+                    lock.release();
+                    lockFile.delete();
+                } catch (Exception e) {
+                }
+            }
         }
     }
 
-    private static String checkAndExtractLibFilename(String pathInJar) {
-        if (pathInJar == null || !pathInJar.startsWith("/")) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "A absolute JAR resource path is required (i.e. starting with '/'), but given '%s'.",
-                            pathInJar));
+    private static String deduceFileName(String path) {
+        String[] parts = path.split("/");
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
         }
-
-        Path path = Paths.get(pathInJar);
-        String filename = path.getFileName().toString();
-        if (filename == null || filename.length() < MIN_FILENAME_LENGTH) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The filename '%s' seems too short. Please check again", filename));
-        }
-        return filename;
+        throw new IllegalArgumentException("invalid path " + path);
     }
 
-    private static File getTempFilePath(String filename) throws IOException {
-        if (temporaryDir == null) {
-            temporaryDir = Files.createTempDirectory(DIR_PREFIX).toFile();
-            temporaryDir.deleteOnExit();
-        }
-        return new File(temporaryDir, filename);
-    }
+    private NativeUtils() {}
 }
