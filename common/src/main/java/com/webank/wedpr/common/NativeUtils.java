@@ -12,7 +12,6 @@ import java.nio.file.*;
  * load native resource
  *
  * @author aaronchu @Description
- * @data 2020/06/18
  */
 public class NativeUtils {
 

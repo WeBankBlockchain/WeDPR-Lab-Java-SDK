@@ -33,7 +33,7 @@ ext {
 
 
 allprojects {
-    group = 'com.webank'
+    group = 'com.webank.wedpr'
     version = '1.4.0-SNAPSHOT'
     apply plugin: 'maven-publish'
     apply plugin: 'idea'
