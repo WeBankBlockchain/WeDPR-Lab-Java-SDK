@@ -28,7 +28,7 @@ public class NativeInterface
                         String.format("Operating system %s is not supported.", osName));
             }
             String libPathInJar = LIB_NAME + libPostFix;
-            NativeUtils.loadLibraryFromJar(libPathInJar);
+            NativeUtils.loadLibrary(libPathInJar);
         } catch (IOException e) {
             // TODO: Provide more instructions on resolving dynamic library loading errors.
             throw new RuntimeException(e);

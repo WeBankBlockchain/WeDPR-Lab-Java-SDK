@@ -21,24 +21,24 @@ public class NativeInterface {
         try {
             String osName = System.getProperty("os.name").toLowerCase();
             if (osName.contains("windows")) {
-                WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/ffi_java_scd.dll";
-                NativeUtils.loadLibraryFromJar("/WeDPR_dynamic_lib/libeay32md.dll");
-                NativeUtils.loadLibraryFromJar("/WeDPR_dynamic_lib/ssleay32md.dll");
+                WEDPR_SCD_LIB_PATH = "WeDPR_dynamic_lib/ffi_java_scd.dll";
+                NativeUtils.loadLibrary("WeDPR_dynamic_lib/libeay32md.dll");
+                NativeUtils.loadLibrary("WeDPR_dynamic_lib/ssleay32md.dll");
             } else if (osName.contains("linux")) {
                 if (hasLibsslVersion(LIBSSL_1_0)) {
-                    WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd_libssl_1_0.so";
+                    WEDPR_SCD_LIB_PATH = "WeDPR_dynamic_lib/libffi_java_scd_libssl_1_0.so";
                 } else if (hasLibsslVersion(LIBSSL_1_1)) {
-                    WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd_libssl_1_1.so";
+                    WEDPR_SCD_LIB_PATH = "WeDPR_dynamic_lib/libffi_java_scd_libssl_1_1.so";
                 } else {
                     throw new WedprException("Linux requires " + LIBSSL_1_1 + " or " + LIBSSL_1_0);
                 }
             } else if (osName.contains("mac")) {
-                WEDPR_SCD_LIB_PATH = "/WeDPR_dynamic_lib/libffi_java_scd.dylib";
+                WEDPR_SCD_LIB_PATH = "WeDPR_dynamic_lib/libffi_java_scd.dylib";
             } else {
                 throw new IOException(
                         String.format("Operating system %s is not supported.", osName));
             }
-            NativeUtils.loadLibraryFromJar(WEDPR_SCD_LIB_PATH);
+            NativeUtils.loadLibrary(WEDPR_SCD_LIB_PATH);
         } catch (IOException | WedprException e) {
             throw new RuntimeException(e);
         }

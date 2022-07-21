@@ -14,16 +14,16 @@ public class NativeInterface {
             String osName = System.getProperty("os.name").toLowerCase();
             String libPathInJar;
             if (osName.contains("windows")) {
-                libPathInJar = "/WeDPR_dynamic_lib/ffi_java_crypto.dll";
+                libPathInJar = "WeDPR_dynamic_lib/ffi_java_crypto.dll";
             } else if (osName.contains("linux")) {
-                libPathInJar = "/WeDPR_dynamic_lib/libffi_java_crypto.so";
+                libPathInJar = "WeDPR_dynamic_lib/libffi_java_crypto.so";
             } else if (osName.contains("mac")) {
-                libPathInJar = "/WeDPR_dynamic_lib/libffi_java_crypto.dylib";
+                libPathInJar = "WeDPR_dynamic_lib/libffi_java_crypto.dylib";
             } else {
                 throw new IOException(
                         String.format("Operating system %s is not supported.", osName));
             }
-            NativeUtils.loadLibraryFromJar(libPathInJar);
+            NativeUtils.loadLibrary(libPathInJar);
         } catch (IOException e) {
             // TODO: Provide more instructions on resolving dynamic library loading errors.
             throw new RuntimeException(e);
