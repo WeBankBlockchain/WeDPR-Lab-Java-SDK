@@ -28,7 +28,7 @@ jobs:
         run: |
           curl -LO https://github.com/WeBankBlockchain/WeDPR-Lab-Core/releases/download/v1.1.0/java_sdk_dynamic_lib_linux.tar.gz
           tar zxvf java_sdk_dynamic_lib_linux.tar.gz
-          cp ./java_sdk_dynamic_lib_linux/* ./demo/src/main/resources/WeDPR_dynamic_lib/
+          cp ./java_sdk_dynamic_lib_linux/* ./sdk-demo/src/main/resources/WeDPR_dynamic_lib/
       - name: compile and run ut
         run: bash ./gradlew clean build
       # - name: run demo

@@ -1,0 +1,27 @@
+// Apply the java-library plugin to add support for Java Library
+plugins {
+    id 'java'
+}
+dependencies {
+    api project(':sdk-common')
+    implementation project(':sdk-common')
+    api project(':sdk-crypto')
+    implementation project(':sdk-crypto')
+    api project(':sdk-ktb')
+    implementation project(':sdk-ktb')
+    api project(':sdk-scd')
+    implementation project(':sdk-scd')
+    api project(':sdk-vcl')
+    implementation project(':sdk-vcl')
+    implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
+    implementation("org.projectlombok:lombok:${lombokVersion}")
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
