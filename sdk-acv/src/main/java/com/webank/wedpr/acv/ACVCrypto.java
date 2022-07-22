@@ -112,6 +112,11 @@ public class ACVCrypto
     return nativeInterface.verifyVoteResult(Utils.bytesToString(pollParameters.toByteArray()), Utils.bytesToString(voteSum.toByteArray()), Utils.bytesToString(aggregatedDecryptedResult.toByteArray()), Utils.bytesToString(voteResult.toByteArray()));
     }
 
+    public static VerifierResult verifyBlankBallot(RegistrationRequest registrationRequest, RegistrationResponse registrationResponse)
+    {
+        return nativeInterface.verifyBlankBallot(Utils.bytesToString(registrationRequest.toByteArray()), Utils.bytesToString(registrationResponse.toByteArray()));
+    }
+
     /// voter related interfaces
     public static VoterResult makeVoterSecret()
     {

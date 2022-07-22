@@ -58,6 +58,7 @@ public class NativeInterface
     public static native VerifierResult verifyCountRequest(String pollParameter, String encryptedVoteSum, String counterShared, String partiallyDecryptedResult);
     public static native VerifierResult verifyCountRequestUnlisted(String pollParameter, String encryptedVoteSum, String counterShared, String partiallyDecryptedResult);
     public static native VerifierResult verifyVoteResult(String pollParameters, String voteSum, String aggregatedDecryptedResult, String voteResult);
+    public static native VerifierResult verifyBlankBallot(String registrationRequest, String registrationResponse);
 
     // voter related interfaces
     public static native VoterResult makeVoterSecret();
