@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+dependencies {
+    api project(':sdk-common')
+    implementation project(':sdk-common')
+	implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
+    implementation("org.projectlombok:lombok:${lombokVersion}")
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}

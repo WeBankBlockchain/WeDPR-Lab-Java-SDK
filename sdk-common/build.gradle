@@ -1,0 +1,65 @@
+// Apply the java-library plugin to add support for Java Library
+plugins {
+    id 'java'
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+/*publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+            artifactId "WeDPR-Lab-" + project.name
+            groupId project.group
+            version project.version
+
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'WeDPR-Lab-Java-SDK'
+                description = 'WeDPR-Lab-Java-SDK'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'zhangsan'
+                        name = 'zhangsan'
+                        email = 'zhangsan@example.com'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK'
+                    url = 'https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoURL = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoURL = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = !version.endsWith("SNAPSHOT") ? releasesRepoURL : snapshotsRepoURL
+
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
+    }
+}*/

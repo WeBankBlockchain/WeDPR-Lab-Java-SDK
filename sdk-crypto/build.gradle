@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+dependencies {
+    api project(':sdk-common')
+    implementation project(':sdk-common')
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}

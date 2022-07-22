@@ -8,10 +8,10 @@
  */
 
 rootProject.name = 'WeDPR-Lab-Java-SDK'
-include 'common'
-include 'solution:crypto'
-include 'solution:vcl'
-include 'solution:scd'
-include 'solution:ktb'
-include 'solution:acv'
-include "demo"
+include 'sdk-common'
+include 'sdk-crypto'
+include 'sdk-vcl'
+include 'sdk-scd'
+include 'sdk-ktb'
+include 'sdk-acv'
+include "sdk-demo"
