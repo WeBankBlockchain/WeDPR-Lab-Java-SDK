@@ -1,11 +1,15 @@
 package com.webank.wedpr.acv;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.webank.wedpr.acv.NativeInterface;
 import com.webank.wedpr.acv.proto.Acv;
+import com.webank.wedpr.acv.proto.Ballot;
 import com.webank.wedpr.acv.proto.CandidateList;
 import com.webank.wedpr.acv.proto.CounterSecret;
 import com.webank.wedpr.acv.proto.DecryptedResultPartStorage;
 import com.webank.wedpr.acv.proto.PollParametersStorage;
+import com.webank.wedpr.acv.proto.RegistrationBlindingPoint;
 import com.webank.wedpr.acv.proto.RegistrationRequest;
 import com.webank.wedpr.acv.proto.RegistrationResponse;
 import com.webank.wedpr.acv.proto.VoteChoice;
@@ -14,9 +18,11 @@ import com.webank.wedpr.acv.proto.VoteResultStorage;
 import com.webank.wedpr.acv.proto.VoteStorage;
 import com.webank.wedpr.acv.proto.VoterSecret;
 import com.webank.wedpr.common.Utils;
+import com.webank.wedpr.common.WedprException;
 
 public class ACVCrypto
 {
+
     private static NativeInterface nativeInterface;
 
     // coordinator related interfaces
@@ -142,5 +148,37 @@ public class ACVCrypto
     public static VoterResult voteUnboundedUnlisted(VoterSecret voterSecret, VoterSecret zeroSecret, VoteChoice voteChoice, RegistrationResponse registrationResponse, PollParametersStorage pollParameters)
     {
         return nativeInterface.voteUnboundedUnlisted(Utils.bytesToString(voterSecret.toByteArray()), Utils.bytesToString(zeroSecret.toByteArray()), Utils.bytesToString(voteChoice.toByteArray()), Utils.bytesToString(registrationResponse.toByteArray()), Utils.bytesToString(pollParameters.toByteArray()));
+    }
+
+    public static boolean verifyWeightBallot(int weightValue, byte[] weightBlindingPoint, byte[] weightBlindingPointG2, String voteRequest) throws InvalidProtocolBufferException, WedprException {
+        RegistrationBlindingPoint weightPoint = RegistrationBlindingPoint.newBuilder().
+                setBlindingPollPoint(ByteString.copyFrom(weightBlindingPoint)).
+                setBlindingBasepointG2(ByteString.copyFrom(weightBlindingPointG2)).build();
+        RegistrationRequest registrationRequest = RegistrationRequest.newBuilder().setWeightPoint(weightPoint).build();
+
+        VoteRequest voteRequestPb = VoteRequest.parseFrom(Utils.stringToBytes(voteRequest));
+        Ballot ballot =
+                Ballot.newBuilder()
+                        .setCiphertext1(voteRequestPb.getVote().getBlankBallot().getCiphertext1())
+                        .setCiphertext2(voteRequestPb.getVote().getBlankBallot().getCiphertext2())
+                        .build();
+
+        RegistrationResponse registrationResponse =
+                RegistrationResponse.newBuilder()
+                        .setVoterWeight(weightValue)
+                        .setBallot(ballot)
+                        .build();
+
+        VerifierResult verifierResult =
+                ACVCrypto.verifyBlankBallot(
+                        registrationRequest,
+                        registrationResponse);
+        if(verifierResult.hasError())
+        {
+            String errorMsg = "verifyWeightBallot error, error: " + verifierResult.wedprErrorMessage +
+                "weightValue: " + weightValue + "voteRequest: " +  voteRequest;
+            throw new WedprException(errorMsg);
+        }
+        return verifierResult.verifyResult;
     }
 }
