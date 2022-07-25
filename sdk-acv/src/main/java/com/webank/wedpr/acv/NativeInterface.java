@@ -36,8 +36,8 @@ public class NativeInterface
     }
     // coordinator related interfaces
     public static native CoordinatorResult makePollParameters(String candidateList, String counterParameters);
-    public static native CoordinatorResult certifyVoter(String secretKey, String registrationRequest);
-    public static native CoordinatorResult certifyUnboundedVoter(String secretKey, String registrationRequest);
+    public static native CoordinatorResult certifyVoter(byte[] secretKey, String registrationRequest);
+    public static native CoordinatorResult certifyUnboundedVoter(byte[] secretKey, String registrationRequest);
     public static native CoordinatorResult aggregateVoteSumResponse(String pollParameters, String votePart, String voteSum);
     public static native CoordinatorResult aggregateVoteSumResponseUnlisted(String pollParameters, String votePart, String voteSum);
     public static native CoordinatorResult aggregateDecryptedPartSum(String pollParameters, String partiallyDecryptedResult, String aggregatedDecryptedResult);
@@ -52,11 +52,11 @@ public class NativeInterface
     public static native CounterResult countUnlisted(String counterID, String counterSecret, String encryptedVoteSum);
 
     // verifier related interfaces
-    public static native VerifierResult verifyVoteRequest(String pollParameters, String voteRequest, String publicKey);
-    public static native VerifierResult verifyUnboundedVoteRequest(String pollParameters, String voteRequest, String publicKey);
-    public static native VerifierResult verifyUnboundedVoteRequestUnlisted(String pollParameters, String voteRequest, String publicKey);
-    public static native VerifierResult verifyCountRequest(String pollParameter, String encryptedVoteSum, String counterShared, String partiallyDecryptedResult);
-    public static native VerifierResult verifyCountRequestUnlisted(String pollParameter, String encryptedVoteSum, String counterShared, String partiallyDecryptedResult);
+    public static native VerifierResult verifyVoteRequest(String pollParameters, String voteRequest, byte[] publicKey);
+    public static native VerifierResult verifyUnboundedVoteRequest(String pollParameters, String voteRequest, byte[] publicKey);
+    public static native VerifierResult verifyUnboundedVoteRequestUnlisted(String pollParameters, String voteRequest, byte[] publicKey);
+    public static native VerifierResult verifyCountRequest(String pollParameter, String encryptedVoteSum, byte[] counterShared, String partiallyDecryptedResult);
+    public static native VerifierResult verifyCountRequestUnlisted(String pollParameter, String encryptedVoteSum, byte[] counterShared, String partiallyDecryptedResult);
     public static native VerifierResult verifyVoteResult(String pollParameters, String voteSum, String aggregatedDecryptedResult, String voteResult);
     public static native VerifierResult verifyBlankBallot(String registrationRequest, String registrationResponse);
 

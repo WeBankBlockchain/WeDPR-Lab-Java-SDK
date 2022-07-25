@@ -31,12 +31,12 @@ public class ACVCrypto
         return nativeInterface.makePollParameters(Utils.bytesToString(candidateList.toByteArray()), Utils.bytesToString(counterParameters.toByteArray()));
     }
 
-    public static CoordinatorResult certifyVoter(String secretKey, RegistrationRequest registrationRequest)
+    public static CoordinatorResult certifyVoter(byte[] secretKey, RegistrationRequest registrationRequest)
     {
     return nativeInterface.certifyVoter(secretKey, Utils.bytesToString(registrationRequest.toByteArray()));
     }
 
-    public static CoordinatorResult certifyUnboundedVoter(String secretKey, RegistrationRequest registrationRequest)
+    public static CoordinatorResult certifyUnboundedVoter(byte[] secretKey, RegistrationRequest registrationRequest)
     {
     return nativeInterface.certifyUnboundedVoter(secretKey, Utils.bytesToString(registrationRequest.toByteArray()));
     }
@@ -92,23 +92,23 @@ public class ACVCrypto
     }
 
     /// verifier related interfaces
-    public static VerifierResult verifyVoteRequest(PollParametersStorage pollParameters, VoteRequest voteRequest, String publicKey)
+    public static VerifierResult verifyVoteRequest(PollParametersStorage pollParameters, VoteRequest voteRequest, byte[]  publicKey)
     {
         return nativeInterface.verifyVoteRequest(Utils.bytesToString(pollParameters.toByteArray()), Utils.bytesToString(voteRequest.toByteArray()), publicKey);
     }
-    public static VerifierResult verifyUnboundedVoteRequest(PollParametersStorage pollParameters, VoteRequest voteRequest, String publicKey)
+    public static VerifierResult verifyUnboundedVoteRequest(PollParametersStorage pollParameters, VoteRequest voteRequest, byte[]  publicKey)
     {
     return nativeInterface.verifyUnboundedVoteRequest(Utils.bytesToString(pollParameters.toByteArray()), Utils.bytesToString(voteRequest.toByteArray()), publicKey);
     }
-    public static VerifierResult verifyUnboundedVoteRequestUnlisted(PollParametersStorage pollParameters, VoteRequest voteRequest, String publicKey)
+    public static VerifierResult verifyUnboundedVoteRequestUnlisted(PollParametersStorage pollParameters, VoteRequest voteRequest, byte[]  publicKey)
     {
         return nativeInterface.verifyUnboundedVoteRequestUnlisted(Utils.bytesToString(pollParameters.toByteArray()), Utils.bytesToString(voteRequest.toByteArray()), publicKey);
     }
-    public static VerifierResult verifyCountRequest(PollParametersStorage pollParameters, VoteStorage encryptedVoteSum, String counterShared, DecryptedResultPartStorage partiallyDecryptedResult)
+    public static VerifierResult verifyCountRequest(PollParametersStorage pollParameters, VoteStorage encryptedVoteSum, byte[]  counterShared, DecryptedResultPartStorage partiallyDecryptedResult)
     {
     return nativeInterface.verifyCountRequest(Utils.bytesToString(pollParameters.toByteArray()), Utils.bytesToString(encryptedVoteSum.toByteArray()), counterShared, Utils.bytesToString(partiallyDecryptedResult.toByteArray()));
     }
-    public static VerifierResult verifyCountRequestUnlisted(PollParametersStorage pollParameters, VoteStorage encryptedVoteSum, String counterShared, DecryptedResultPartStorage partiallyDecryptedResult)
+    public static VerifierResult verifyCountRequestUnlisted(PollParametersStorage pollParameters, VoteStorage encryptedVoteSum, byte[]  counterShared, DecryptedResultPartStorage partiallyDecryptedResult)
     {
         return nativeInterface.verifyCountRequestUnlisted(Utils.bytesToString(pollParameters.toByteArray()), Utils.bytesToString(encryptedVoteSum.toByteArray()), counterShared, Utils.bytesToString(partiallyDecryptedResult.toByteArray()));
 
