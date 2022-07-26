@@ -36,8 +36,8 @@ public class NativeInterface
     }
     // coordinator related interfaces
     public static native CoordinatorResult makePollParameters(String candidateList, String counterParameters);
-    public static native CoordinatorResult certifyVoter(byte[] secretKey, String registrationRequest);
-    public static native CoordinatorResult certifyUnboundedVoter(byte[] secretKey, String registrationRequest);
+    public static native CoordinatorResult certifyVoter(byte[] secretKey, String registrationRequest, int voterWeight);
+    public static native CoordinatorResult certifyUnboundedVoter(byte[] secretKey, String registrationRequest, int voterWeight);
     public static native CoordinatorResult aggregateVoteSumResponse(String pollParameters, String votePart, String voteSum);
     public static native CoordinatorResult aggregateVoteSumResponseUnlisted(String pollParameters, String votePart, String voteSum);
     public static native CoordinatorResult aggregateDecryptedPartSum(String pollParameters, String partiallyDecryptedResult, String aggregatedDecryptedResult);

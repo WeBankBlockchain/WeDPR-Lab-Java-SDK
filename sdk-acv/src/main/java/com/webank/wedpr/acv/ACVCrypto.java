@@ -31,14 +31,14 @@ public class ACVCrypto
         return nativeInterface.makePollParameters(Utils.bytesToString(candidateList.toByteArray()), Utils.bytesToString(counterParameters.toByteArray()));
     }
 
-    public static CoordinatorResult certifyVoter(byte[] secretKey, RegistrationRequest registrationRequest)
+    public static CoordinatorResult certifyVoter(byte[] secretKey, RegistrationRequest registrationRequest, int voterWeight)
     {
-    return nativeInterface.certifyVoter(secretKey, Utils.bytesToString(registrationRequest.toByteArray()));
+    return nativeInterface.certifyVoter(secretKey, Utils.bytesToString(registrationRequest.toByteArray()), voterWeight);
     }
 
-    public static CoordinatorResult certifyUnboundedVoter(byte[] secretKey, RegistrationRequest registrationRequest)
+    public static CoordinatorResult certifyUnboundedVoter(byte[] secretKey, RegistrationRequest registrationRequest, int voterWeight)
     {
-    return nativeInterface.certifyUnboundedVoter(secretKey, Utils.bytesToString(registrationRequest.toByteArray()));
+    return nativeInterface.certifyUnboundedVoter(secretKey, Utils.bytesToString(registrationRequest.toByteArray()), voterWeight);
     }
 
     public static CoordinatorResult aggregateVoteSumResponse(PollParametersStorage pollParameters, VoteStorage votePart, VoteStorage voteSum)
