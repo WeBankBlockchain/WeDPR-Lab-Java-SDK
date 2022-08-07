@@ -175,16 +175,16 @@ dependencies {
 sourceSets {
     main {
         java {
-			srcDir "common/src/main/java"
-            srcDir "solution/crypto/src/main/java"
-            srcDir "solution/vcl/src/main/java"
-            srcDir "solution/scd/src/main/java"
-            srcDir "solution/ktb/src/main/java"
-            srcDir "solution/acv/src/main/java"
+			srcDir "sdk-common/src/main/java"
+            srcDir "sdk-crypto/src/main/java"
+            srcDir "sdk-vcl/src/main/java"
+            srcDir "sdk-scd/src/main/java"
+            srcDir "sdk-ktb/src/main/java"
+            srcDir "sdk-acv/src/main/java"
             srcDir "proto/main/java/com/webank/wedpr/acv/proto/"
         }
         proto {
-            srcDir "solution/acv/src/main/proto"
+            srcDir "sdk-acv/src/main/proto"
         }
         buildscript
         resources {
@@ -197,7 +197,6 @@ googleJavaFormat {
     options style: 'AOSP'
     source = sourceSets*.allJava
     include 'common/*.java'
-    include 'solutions/*.java'
 }
 javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')
