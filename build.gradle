@@ -115,7 +115,7 @@ subprojects {
     }
     jar {
         destinationDir file("dist/apps")
-        archiveName "WeDPR-Lab-Java-SDK-" + project.name + "-" + project.version + ".jar"
+        archiveName "WeDPR-Lab-" + project.name + "-" + project.version + ".jar"
 
         exclude "**/*.xml"
         exclude "**/*.properties"
