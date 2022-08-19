@@ -26,9 +26,12 @@ ext {
         ossrhPassword = "xxx"
     }
     junitVersion = '4.13.2'
-    guavaVersion = '30.1.1-jre'
-	protobufVersion = '3.9.1'
-	lombokVersion = '1.18.2'
+    guavaVersion = '31.1-jre'
+    protobufVersion = '3.21.5'
+    lombokVersion = '1.18.24'
+    protobufGradlePluginVersion = '0.8.19'
+    protocVersion = '3.21.5'
+    genGrpcJavaVersion = '1.48.1'
 }
 
 
@@ -45,15 +48,15 @@ allprojects {
     apply plugin: 'com.google.protobuf'
 
      dependencies {
-        implementation 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        implementation "com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}"
     }
     protobuf {
         protoc {
-            artifact = "com.google.protobuf:protoc:3.2.0"
+            artifact = "com.google.protobuf:protoc:${protocVersion}"
         }
         plugins {
             grpc {
-                artifact = 'io.grpc:protoc-gen-grpc-java:1.4.0'
+                artifact = "io.grpc:protoc-gen-grpc-java:${genGrpcJavaVersion}"
             }
         }
         generateProtoTasks {
