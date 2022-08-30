@@ -11,7 +11,7 @@ task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier = 'javadoc'
 }
-/*publishing {
+publishing {
     publications {
         mavenJava(MavenPublication) {
 
@@ -25,6 +25,7 @@ task javadocJar(type: Jar) {
             pom {
                 name = 'WeDPR-Lab-Java-SDK'
                 description = 'WeDPR-Lab-Java-SDK'
+                url = 'http://www.fisco-bcos.org'
 
                 licenses {
                     license {
@@ -62,4 +63,4 @@ task javadocJar(type: Jar) {
     signing {
         sign publishing.publications.mavenJava
     }
-}*/
+}
