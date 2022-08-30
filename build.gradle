@@ -231,6 +231,7 @@ publishing {
             pom {
                 name = 'WeDPR-Lab-Java-SDK'
                 description = 'WeDPR-Lab-Java-SDK'
+                url = 'http://www.fisco-bcos.org'
 
                 licenses {
                     license {
