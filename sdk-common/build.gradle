@@ -25,7 +25,7 @@ publishing {
             pom {
                 name = 'WeDPR-Lab-Java-SDK'
                 description = 'WeDPR-Lab-Java-SDK'
-                url = 'http://www.fisco-bcos.org'
+                url = 'https://github.com/WeBankBlockchain/WeDPR-Lab-Java-SDK'
 
                 licenses {
                     license {
